@@ -3,7 +3,7 @@
   connection: local
   become: true
   roles:
-    - { role: ansible-role-sudoers-policed, team: "example" }
+    - { role: ../../ansible-role-sudoers-policed, team: "example" }
   post_tasks:
      - name: finalize sudoers config
        include_role:
