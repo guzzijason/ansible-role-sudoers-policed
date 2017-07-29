@@ -2,6 +2,8 @@
 - hosts: localhost
   connection: local
   become: true
+  become_method: sudo
+  become_user: root
   roles:
     - { role: ansible-role-sudoers-policed, team: "example" }
   post_tasks:
