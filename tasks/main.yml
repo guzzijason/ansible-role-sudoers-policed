@@ -3,12 +3,8 @@
 # assembled by the 'finalize' post_tasks.
 ---
 - name: system packages | install sudo
-  become: yes
-  yum:
-    pkg: "{{ item }}"
-    state: present
-  with_items:
-    - sudo
+  yum: pkg=sudo state=present
+  when: ansible_os_family == 'RedHat'
 
 - name: sudoers | enable sudoers.d
   lineinfile:
