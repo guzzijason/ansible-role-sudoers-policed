@@ -1,0 +1,30 @@
+# finalize sudoers
+# It is important to run this as a post_task at the end
+# of your playbook, in order to compile all individual
+# sudoer rules that may have been specified. Also, by
+# default, this will purge sudoer configs not managed
+# by ansible.
+---
+- name: sudoers finalize | assemble sudoers file
+  assemble:
+    src: "{{ sudoer_tmpdir.path }}"
+    dest: /etc/sudoers.d/sudoers
+    validate: visudo -cf %s
+
+- name: sudoers finalize | find foreign sudoers
+  find:
+    paths: "/etc/sudoers.d"
+    patterns: "^(?!sudoers$).+$"
+    use_regex: True
+  register: foreign_sudoers
+
+- name: sudoers finalize | purge foregin sudoers
+  file: path="{{ item.path }}" state=absent
+  with_items:
+    - "{{ foreign_sudoers.files }}"
+  when: sudoer_purge and foreign_sudoers
+
+- name: sudoers finalize | clean up temp directory
+  file: path={{ sudoer_tmpdir.path }} state=absent
+  changed_when: False
+

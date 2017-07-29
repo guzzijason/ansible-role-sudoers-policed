@@ -1,0 +1,12 @@
+# 'priority' determines the order in which this rule will be
+# placed in the sudoers config. Value should be between 01-99.
+priority: 09
+sudoers:
+  - user: 'foobar'
+    become: root
+    nopasswd: True
+    command: /full/path/to/command ARG1 ARG2
+  - user: '%foogroup'
+    become: ALL
+    nopasswd: True
+    command: /some/other/command

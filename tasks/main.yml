@@ -1,2 +1,63 @@
+# compile sudoers config
+# Builds the sudoer config fragments to be later
+# assembled by the 'finalize' post_tasks.
 ---
-# tasks file for sudoers-policed
+- name: system packages | install sudo
+  become: yes
+  yum:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - sudo
+
+- name: sudoers | enable sudoers.d
+  lineinfile:
+    backup: yes
+    dest: /etc/sudoers
+    line: '#includedir /etc/sudoers.d'
+    state: present
+    validate: visudo -cf %s
+
+- name: sudoers | create temp dir
+  tempfile:
+    state: directory
+    prefix: sudoers.
+  register: tempdir_result
+  when: sudoer_tmpdir is undefined
+  changed_when: False
+
+- name: sudoers | set fact for temp dir
+  set_fact: sudoer_tmpdir={{ tempdir_result }}
+  when: sudoer_tmpdir is undefined
+
+- name: sudoers | add default sudoer fragment to tmp dir
+  copy:
+    src: sudoer.top
+    dest: "{{ sudoer_tmpdir.path }}/sudoer_00"
+  changed_when: False
+
+- name: sudoers | add cloud-init sudoer fragment to tmp dir
+  template:
+    src: sudoers-cloud.j2
+    dest: "{{ sudoer_tmpdir.path }}/sudoer_05"
+  when:
+    - cloud == True
+    - "ansible_virtualization_type is defined and ansible_virtualization_type == 'openstack'"
+  changed_when: False
+
+- name: sudoers | include sudoer vars for team or user
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+      - "{{ team }}.yml"
+      - "{{ user }}.yml"
+      skip: true
+  when: team is defined or user is defined
+
+- name: sudoers | add sudoer entries to tmp file
+  template:
+    src: sudoers.j2
+    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ priority }}"
+  when: sudoers | default([])
+  changed_when: False
+

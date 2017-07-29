@@ -1,5 +1,11 @@
 ---
 - hosts: localhost
-  remote_user: root
+  connection: local
+  become: true
   roles:
-    - sudoers-policed
+    - { role: sudoers-policed, team: "example" }
+  post_tasks:
+     - name: finalize sudoers config
+       include_role:
+         name: sudoers-policed
+         tasks_from: finalize
