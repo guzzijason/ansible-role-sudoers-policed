@@ -1,7 +1,7 @@
 sudoers-policed
 =========
 
-This role is for managing sudoers. In addition to simply creating sudoer config entryies, it also has the addiitonal capability of purging (or policing) foreign sudoers config files that are not managed by the Ansible playbook.
+This role is for managing sudoers. In addition to simply creating sudoer config entries, it also has the addiitonal capability of purging (or policing) foreign sudoers config files that are not managed by the Ansible playbook.
 
 Requirements
 ------------
@@ -85,7 +85,7 @@ If your playbook includes multiple plays, you may need to have a play just for y
 To-Do
 -------
 
-Support for more cloud environments' "cloud-init" user.
+Support for detecting additional cloud environments (besides openstack) in order to configure sudo privs for the cloud-init user.
 
 License
 -------
