@@ -16,8 +16,10 @@ The following default variables (`defaults/main.yml`):
 ```
 cloud: True          # should we install the cloud-init default user's entry?
 cloud_user: centos   # the name of the default cloud-init user
-sudoer_purge: True   # should we also purge sudoers files that weren't created by Ansible?
+sudoer_purge: False   # should we also purge sudoers files that weren't created by Ansible?*
 ```
+
+\* If enabling the `sudoer_purge` feature, please be sure that the necessary ansible user is in your sudoer cofig, otherwise you could break your anisble environment. For this reason, this is disabled by default!
 
 Below is an example variable file. You can break up different individual or team sudo conifgs into different files for organizational purposes, and then specify each one as a parameter of the role. The output of this role will be a single `sudoers.d/sudoers` file, with all necessary entries contained.
 
@@ -44,6 +46,8 @@ Dependencies
 ------------
 
 It is important to note that there are "finalization" tasks as part of this role, that *MUST* be run at the end of your playbook (see examples). The main portion of the role simply generates temporary file fragments, but doesn't install them. This allows for the role to be called multiple times from various plays, if necessary. The finalization steps then assemble and install the finished file. Optionally, the policing of "foreign" sudoer files will happen during finalization as well.
+
+*NB!* If you are policing stray sudoers configs and your ansible envioronment depends on `sudo`, then please *be sure that the necessary user for ansible is being added to the new config!*
 
 Example Playbook
 ----------------
@@ -79,7 +83,7 @@ If your playbook includes multiple plays, you may need to have a play just for y
 To-Do
 -------
 
-Support for more platforms
+Support for more cloud environments' "cloud-init" user.
 
 License
 -------
