@@ -10,3 +10,7 @@ sudoers:
     become: ALL
     nopasswd: True
     command: /some/other/command
+  - user: 'travis'
+    become: ALL
+    nopasswd: True
+    command: ALL

@@ -11,7 +11,6 @@ install:
   - ansible --version
   - printf '[defaults]\nroles_path=../' > ansible.cfg
 script:
-  - id
   - ansible-playbook -i tests/inventory --syntax-check tests/test.yml
   - ansible-playbook -i tests/inventory -vvv tests/test.yml
 notifications:
