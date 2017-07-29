@@ -11,5 +11,5 @@
        include_role:
          name: ansible-role-sudoers-policed
          tasks_from: finalize
-       vars:
-         sudoer_purge: True
+#       vars:
+#         sudoer_purge: True
