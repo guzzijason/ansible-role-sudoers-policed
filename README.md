@@ -1,4 +1,4 @@
-Role Name
+sudoers-policed
 =========
 
 This role is for managing sudoers. In addition to simply creating sudoer config entryies, it also has the addiitonal capability of purging (or policing) foreign sudoers config files that are not managed by the Ansible playbook.
