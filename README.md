@@ -50,27 +50,31 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
-      become: yes
-      roles:
-        - { role: sudoers, team: "example" }
-        - { role: sudoers, user: "someuser" }
-      post_tasks:
-         - name: finalize sudoers config
-           include_role:
-             name: sudoers
-             tasks_from: finalize
+```
+- hosts: servers
+  become: yes
+  roles:
+    - { role: sudoers, team: "example" }
+    - { role: sudoers, user: "someuser" }
+  post_tasks:
+     - name: finalize sudoers config
+       include_role:
+         name: sudoers
+         tasks_from: finalize
+```
 
-If you're playbook includes multiple plays, you may need to have a play just for your finalization `post_tasks`, and include it like so:
+If your playbook includes multiple plays, you may need to have a play just for your finalization `post_tasks`, and include it like so:
 
-    - hosts: all
-      become: yes
-    
-    - include: playbooks/common.yml
-    - include: playbooks/stuff.yml
-    
-    # finalize plays must come last
-    - include: playbooks/finalize.yml
+```
+- hosts: all
+  become: yes
+
+- include: playbooks/common.yml
+- include: playbooks/stuff.yml
+
+# finalize plays must come last
+- include: playbooks/finalize.yml
+```
 
 License
 -------
