@@ -25,7 +25,7 @@ Below is an example variable file. You can break up different individual or team
 
 The `priority` variable helps to arrange the order of rules, and should be given a value in the range "01"-"99". For a given user, the last rule generally "wins", so by setting different priorities, you can control where in the file the rules will be placed - the lower the value (closest to "01") of the priority is, the closer to the top of the file these entries will be.
 
-The rest of the vars in the example should be self-expainatory - they map to standard sudoers config options.
+The rest of the vars in the example should be self-expainatory - they map to standard sudoers config options. An optional `aliases:` section can be included in order to define User_Alias, Runas_Alias, Host_Alias, or Cmnd_Alias entries.
 
 ```
 # vars/example.yml
@@ -40,6 +40,10 @@ sudoers:
     become: ALL
     nopasswd: True
     command: ALL
+aliases:
+  - type: Runas_Alias
+    name: OP
+    value: root, operator
 ```
 
 Dependencies
