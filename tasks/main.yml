@@ -48,20 +48,19 @@
       - "{{ team }}.yml"
       - "{{ user }}.yml"
       skip: true
-  register: target = "{{ item }}"
   when: team is defined or user is defined
 
 - name: sudoers | add sudoer fragment to tmp dir
   template:
     src: sudoers.j2
-    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ priority }}_{{ target }}"
+    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ priority }}_{{ 9999 | random }}"
   when: sudoers | default([])
   changed_when: False
 
 - name: sudoers | add alias fragment to tmp dir
   template:
     src: aliases.j2
-    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ priority }}_{{ target }}_alias"
+    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ priority }}_{{ 9999 | random }}"
   when: aliases | default([])
   changed_when: False
 

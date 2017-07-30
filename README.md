@@ -52,7 +52,7 @@ __NB!__ If you are policing stray sudoers configs and your ansible envioronment 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+In the example below, note that the variables `team` and `user` are functionally the same - they do exactly the same thing, which is to reference a file in `vars/{{ team }}.yml` or `vars/{{ user }}.yml`. We are including both labels in order to make the playbook more readable.
 
 ```
 - hosts: servers
