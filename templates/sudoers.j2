@@ -1,4 +1,4 @@
-{% for item in sudoers %}
+{% for item in sudovars.sudoers %}
 {{ item.user }} ALL=({{ item.become }}) {{ "NOPASSWD: " if item.nopasswd | default(false) else "" }}{{ item.command }}
 {% endfor %}
 

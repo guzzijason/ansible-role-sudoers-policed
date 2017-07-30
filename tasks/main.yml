@@ -42,25 +42,24 @@
   changed_when: False
 
 - name: sudoers | include sudoer vars for team or user
-  include_vars: "{{ item }}"
+  include_vars: file="{{ item }}" name=sudovars
   with_first_found:
     - files:
       - "{{ team }}.yml"
       - "{{ user }}.yml"
-      skip: true
   when: team is defined or user is defined
 
 - name: sudoers | add sudoer fragment to tmp dir
   template:
     src: sudoers.j2
-    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ priority }}_{{ 9999 | random }}"
-  when: sudoers | default([])
+    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ sudovars.priority }}_{{ 9999 | random }}"
+  when: sudovars.sudoers is defined
   changed_when: False
 
 - name: sudoers | add alias fragment to tmp dir
   template:
     src: aliases.j2
-    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ priority }}_{{ 9999 | random }}"
-  when: aliases | default([])
+    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ sudovars.priority }}_{{ 9999 | random }}"
+  when: sudovars.aliases is defined
   changed_when: False
 
