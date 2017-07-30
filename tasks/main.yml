@@ -48,7 +48,7 @@
       - "{{ team }}.yml"
       - "{{ user }}.yml"
       skip: true
-  register: target = {{ item }}
+  register: target = "{{ item }}"
   when: team is defined or user is defined
 
 - name: sudoers | add sudoer fragment to tmp dir

@@ -13,6 +13,6 @@ install:
 script:
   - ansible-playbook -i tests/inventory --syntax-check tests/test.yml
   - ansible-playbook -i tests/inventory -vvv tests/test.yml
-  - cat /etc/sudoers.d/sudoers
+  - sudo cat /etc/sudoers.d/sudoers
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
