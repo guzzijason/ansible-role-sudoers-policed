@@ -1,3 +1,5 @@
+### this file managed by ansible
+
 {% if sudovars.aliases is defined %}
 {% for item in sudovars.aliases %}
 {{ item.type }} {{ item.name }} = {{ item.value }}
