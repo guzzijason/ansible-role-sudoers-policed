@@ -4,7 +4,7 @@
 
 - name: finalize | find foreign sudoers
   find:
-    paths: "/tmp/sudoers.d"
+    paths: "/etc/sudoers.d"
   register: installed_sudoers
 
 - name: finalize | purge foregin sudoers
