@@ -1,12 +1,10 @@
-# compile sudoers config
-# Builds the sudoer config fragments to be later
-# assembled by the 'finalize' post_tasks.
+# install sudoers configs
 ---
-- name: system packages | install sudo
+- name: install sudo
   yum: pkg=sudo state=present
   when: ansible_os_family == 'RedHat'
 
-- name: sudoers | enable sudoers.d
+- name: enable sudoers.d
   lineinfile:
     backup: yes
     dest: /etc/sudoers
@@ -14,34 +12,36 @@
     state: present
     validate: visudo -cf %s
 
-- name: sudoers | create temp dir
-  tempfile:
-    state: directory
-    prefix: sudoers.
-  register: tempdir_result
-  when: sudoer_tmpdir is undefined
-  changed_when: False
+- name: set fact for tracking installed files
+  set_fact: sudoer_list=[]
+  when: sudoer_list is undefined
 
-- name: sudoers | set fact for temp dir
-  set_fact: sudoer_tmpdir={{ tempdir_result }}
-  when: sudoer_tmpdir is undefined
-
-- name: sudoers | add default sudoer fragment to tmp dir
+- name: install default sudoer fragment
   copy:
     src: sudoer.top
-    dest: "{{ sudoer_tmpdir.path }}/sudoer_00"
-  changed_when: False
+    dest: "/etc/sudoers.d/00_defaults"
+  register: sudoer_default
 
-- name: sudoers | add cloud-init sudoer fragment to tmp dir
+- name: set fact for tracking installed files
+  set_fact: sudoer_list="{{ sudoer_list}} + [ '{{ sudoer_default.dest }}' ]"
+  when: sudoer_default|succeeded
+
+- name: install cloud-init sudoer fragment
   template:
     src: sudoers-cloud.j2
-    dest: "{{ sudoer_tmpdir.path }}/sudoer_05"
+    dest: "/etc/sudoers.d/05_cloud-init"
+  register: sudoer_cloud
   when:
     - cloud == True
     - "ansible_virtualization_type is defined and ansible_virtualization_type == 'openstack'"
-  changed_when: False
 
-- name: sudoers | include sudoer vars for team or user
+- debug: var=sudoer_cloud
+
+- name: add cloud-init file to tracking list
+  set_fact: sudoer_list="{{ sudoer_list}} + [ '{{ sudoer_cloud.dest | default(sudoer_cloud.path) }}' ]"
+  when: sudoer_cloud|succeeded
+
+- name: include sudoer vars for team or user
   include_vars: file="{{ item }}" name=sudovars
   with_first_found:
     - files:
@@ -49,17 +49,14 @@
       - "{{ user }}.yml"
   when: team is defined or user is defined
 
-- name: sudoers | add sudoer fragment to tmp dir
+- name: install sudoer fragment for "{{ team | default(user) }}"
   template:
     src: sudoers.j2
-    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ sudovars.priority }}_{{ 9999 | random }}"
+    dest: "/etc/sudoers.d/{{ sudovars.priority }}_{{ team | default(user) }}"
+  register: sudoer_user
   when: sudovars.sudoers is defined
-  changed_when: False
 
-- name: sudoers | add alias fragment to tmp dir
-  template:
-    src: aliases.j2
-    dest: "{{ sudoer_tmpdir.path }}/sudoer_{{ sudovars.priority }}_{{ 9999 | random }}"
-  when: sudovars.aliases is defined
-  changed_when: False
+- name: add {{ team | default(user) }} file to tracking list
+  set_fact: sudoer_list="{{ sudoer_list}} + [ '{{ sudoer_user.dest | default(sudoer_user.path) }}' ]"
+  when: sudoer_cloud|succeeded
 
