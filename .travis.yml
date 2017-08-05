@@ -15,6 +15,9 @@ script:
   - ansible-playbook -i tests/inventory --syntax-check tests/test.yml
   - ansible-playbook -i tests/inventory -vvv tests/test.yml
   - sudo ls -l /etc/sudoers.d/
+  - sudo cat /etc/sudoers.d/09_example
+  - sudo grep travis /etc/sudoers.d/09_example
+  - sudo grep Runas_Alias /etc/sudoers.d/09_example
   - sudo test  -f /etc/sudoers.d/00_defaults
   - sudo test  -f /etc/sudoers.d/09_example
   - sudo test ! -f /etc/sudoers.d/bogus.file

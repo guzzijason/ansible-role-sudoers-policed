@@ -1,3 +1,9 @@
+{% if sudovars.aliases %}
+{% for item in sudovars.aliases %}
+{{ item.type }} {{ item.name }} = {{ item.value }}
+
+{% endfor %}
+{% endif %}
 {% for item in sudovars.sudoers %}
 {{ item.user }} ALL=({{ item.become }}) {{ "NOPASSWD: " if item.nopasswd | default(false) else "" }}{{ item.command }}
 {% endfor %}
