@@ -35,11 +35,9 @@
     - cloud == True
     - "ansible_virtualization_type is defined and ansible_virtualization_type == 'openstack'"
 
-- debug: var=sudoer_cloud
-
 - name: add cloud-init file to tracking list
   set_fact: sudoer_list="{{ sudoer_list}} + [ '{{ sudoer_cloud.dest | default(sudoer_cloud.path) }}' ]"
-  when: sudoer_cloud|succeeded
+  when: not sudoer_cloud|skipped
 
 - name: include sudoer vars for team or user
   include_vars: file="{{ item }}" name=sudovars
