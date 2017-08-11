@@ -6,7 +6,7 @@ This role is for managing sudoers. In addition to simply creating sudoer config 
 Requirements
 ------------
 
-This role requires at least Ansible 2.3, as it relies on the `tempfile` module which does not exist in earlier versions. Also, requires root access to do its job, so `become: yes`.
+As far as I can tell, no specific version required currently.
 
 Role Variables
 --------------
@@ -49,7 +49,7 @@ aliases:
 Dependencies
 ------------
 
-It is important to note that there are "finalization" tasks as part of this role, that *MUST* be run at the end of your playbook (see examples). The main portion of the role simply generates temporary file fragments, but doesn't install them. This allows for the role to be called multiple times from various plays, if necessary. The finalization steps then assemble and install the finished file. Optionally, the policing of "foreign" sudoer files will happen during finalization as well.
+If you are (optionally) policing stray sudoer config files, be sure to use the finalization post_tasks as illustrated in the example. This is not necessary, however; if you omit the finalization tasks, you will still be adding sudoer configs - just not removing strays!
 
 __NB!__ If you are policing stray sudoers configs and your ansible envioronment depends on `sudo`, then please __be sure that the necessary user for ansible is being added to the new config!__
 
