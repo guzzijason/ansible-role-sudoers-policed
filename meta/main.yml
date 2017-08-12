@@ -2,6 +2,7 @@
 galaxy_info:
   author: Jason Tucker
   description: Manage sudoers, including removing sudoers.d files not managed by ansible
+  min_ansible_version: N/A
   license: MIT
   platforms:
    - name: EL
